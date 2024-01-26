@@ -10,4 +10,4 @@ class L10nEsAeatTownship(models.Model):
 
     name = fields.Char()
     code = fields.Char()
-    state_code = fields.Char(index=True)
+    state_code = fields.Char(index=True)  # TODO: Creo que no es necesario

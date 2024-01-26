@@ -1,11 +1,10 @@
 from odoo import _, api, exceptions, fields, models
 from odoo.tools import float_compare
 
-from odoo.addons.l10n_es_aeat.models.spanish_states_mapping import SPANISH_STATES
+from odoo.addons.l10n_es_aeat.models.aeat_data import AEAT_STATES_CODE_MAP
 
 
 class L10nEsAeatMod190Report(models.Model):
-
     _description = "AEAT 190 report"
     _inherit = "l10n.es.aeat.report.tax.mapping"
     _name = "l10n.es.aeat.mod190.report"
@@ -213,7 +212,7 @@ class L10nEsAeatMod190Report(models.Model):
         self.casilla_03 = retenciones
 
     def _get_line_mod190_vals(self, rp, key_id, subkey_id):
-        codigo_provincia = SPANISH_STATES.get(rp.state_id.code)
+        codigo_provincia = AEAT_STATES_CODE_MAP.get(rp.state_id.code)
         if not codigo_provincia:
             exceptions.UserError(
                 _("The state is not defined in the partner, %s") % rp.name
@@ -500,7 +499,7 @@ class L10nEsAeatMod190ReportLine(models.Model):
             if not partner.state_id:
                 exceptions.UserError(_("Provincia no definida en el cliente"))
 
-            self.codigo_provincia = SPANISH_STATES.get(partner.state_id.code)
+            self.codigo_provincia = AEAT_STATES_CODE_MAP.get(partner.state_id.code)
             if not self.codigo_provincia:
                 self.codigo_provincia = "98"
 

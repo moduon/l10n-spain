@@ -28,14 +28,22 @@ class L10nEsAeatRealEstate(models.Model):
     )
     situation = fields.Selection(
         selection=[
-            ("1", "1 - Spain but Basque Country and Navarra"),
+            ("1", "1 - Spain but not Basque Country and Navarra"),
             ("2", "2 - Basque Country and Navarra"),
-            ("3", "3 - Spain, without catastral reference"),
+            ("3", "3 - Navarra"),
             ("4", "4 - Foreign"),
         ],
         string="Real estate Situation",
         required=True,
         default="1",
+        help="1.Property with a cadastral reference located anywhere in Spain,"
+        " except for the Basque Country and Navarre. of the Spanish territory, "
+        "except for the Basque Country and Navarre.\n"
+        "2. Property with cadastral reference located in the Autonomous Community"
+        " of the Basque Country.\n"
+        "3. Property with cadastral reference located in the Community of Navarre.\n"
+        "4. Inmueble en cualquiera de las situaciones anteriores, pero sin "
+        "referencia catastral.\n",
     )
     reference = fields.Char(
         string="Catastral Reference",
