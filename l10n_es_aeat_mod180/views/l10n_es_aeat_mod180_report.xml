@@ -22,6 +22,11 @@
         <field name="model">l10n.es.aeat.mod180.report</field>
         <field name="inherit_id" ref="l10n_es_aeat.view_l10n_es_aeat_report_form" />
         <field name="arch" type="xml">
+            <xpath expr="//header" position="after">
+                <div class="alert alert-danger" role="alert">
+                    <span>Some recipients haven't NIF. Check the recipients tab</span>
+                </div>
+            </xpath>
             <field name="previous_number" position="after">
                 <field
                     name="tipo_declaracion_positiva"
@@ -87,13 +92,19 @@
             </field>
             <group name="group_declaration" position="after">
                 <notebook>
-                    <page name="real_states" string="Real States">
-                        <field
-                            name="move_line_ids"
-                            context="{'tree_view_ref': 'account.view_move_line_tree'}"
-                            invisible="1"
-                        />
-                        <field name="real_state_ids" />
+                    <page name="recipients" string="Recipients">
+                        <field name="recipient_ids">
+                            <tree decoration-danger="error_nif">
+                                <field name="move_line_id" />
+                                <field name="real_state_id" />
+                                <field name="modalidad" />
+                                <field name="signo" />
+                                <field name="base_retenciones" />
+                                <field name="porcentaje_retencion" />
+                                <field name="cuota_retencion" />
+                                <field name="error_nif" invisible="1" />
+                            </tree>
+                        </field>
                     </page>
                 </notebook>
             </group>

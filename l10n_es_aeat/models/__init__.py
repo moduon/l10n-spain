@@ -19,3 +19,4 @@ from . import account_move
 from . import l10n_es_aeat_township
 from . import l10n_es_aeat_real_estate
 from . import account_move_line
+from . import res_country_state

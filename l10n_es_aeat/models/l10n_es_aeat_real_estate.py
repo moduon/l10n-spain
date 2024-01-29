@@ -1,7 +1,7 @@
 # Copyright 2023 Moduon - Eduardo de Miguel
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 from .aeat_data import AEAT_ADDRESS_TYPES, AEAT_STATES_CODE_MAP
 
@@ -92,11 +92,11 @@ class L10nEsAeatRealEstate(models.Model):
         domain="[('country_id.code', '=', 'ES')]",
         required=True,
     )
-    state_code = fields.Char(
-        compute="_compute_state_related_fields",
-        store=True,
-        compute_sudo=True,
-    )
+    # state_code = fields.Char(
+    #     compute="_compute_state_related_fields",
+    #     store=True,
+    #     compute_sudo=True,
+    # )
     township_domain = fields.Many2many(
         comodel_name="l10n.es.aeat.township",
         compute="_compute_state_related_fields",
@@ -127,11 +127,11 @@ class L10nEsAeatRealEstate(models.Model):
         store=True,
         help="Checked if this record is OK",
     )
-    error_text = fields.Char(
-        string="Errors",
-        compute="_compute_check_ok",
-        store=True,
-    )
+    # error_text = fields.Char(
+    #     string="Errors",
+    #     compute="_compute_check_ok",
+    #     store=True,
+    # )
 
     @api.depends("state_id")
     def _compute_state_related_fields(self):
@@ -139,7 +139,7 @@ class L10nEsAeatRealEstate(models.Model):
         self.township_domain = []
         for record in self:
             state_code = AEAT_STATES_CODE_MAP.get(record.state_id.code, False)
-            record.state_code = state_code
+            # record.state_code = state_code
             if state_code:
                 record.township_domain = leat_model.search(
                     [("state_code", "=", state_code)]
@@ -150,12 +150,12 @@ class L10nEsAeatRealEstate(models.Model):
         for record in self:
             record.city = record.township_id and record.township_id.name or False
 
-    @api.depends("state_code")
-    def _compute_check_ok(self):
-        self.update({"check_ok": False, "error_text": False})
-        for record in self:
-            errors = []
-            if not record.state_code:
-                errors.append(_("Without state"))
-            record.check_ok = not bool(errors)
-            record.error_text = bool(errors) and ", ".join(errors)
+    # @api.depends("state_code")
+    # def _compute_check_ok(self):
+    #     self.update({"check_ok": False, "error_text": False})
+    #     for record in self:
+    #         errors = []
+    #         if not record.state_code:
+    #             errors.append(_("Without state"))
+    #         record.check_ok = not bool(errors)
+    #         record.error_text = bool(errors) and ", ".join(errors)

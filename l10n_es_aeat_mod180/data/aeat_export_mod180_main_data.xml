@@ -178,7 +178,7 @@
         <field name="alignment">right</field>
         <field name="apply_sign">False</field>
     </record>
-    <!-- 16. Retenciones a ingresos a cuenta -->
+    <!-- 16. Retenciones e ingresos a cuenta -->
     <record id="aeat_mod180_main_export_line_16" model="aeat.model.export.config.line">
         <field name="sequence">16</field>
         <field name="export_config_id" ref="aeat_mod_180_main_export_config" />
@@ -217,6 +217,6 @@
         >Exportación modelo 180 - Tipo de Registro 1 – Registro de perceptor</field>
         <field name="subconfig_id" ref="aeat_mod180_sub01_export_config" />
         <field name="export_type">subconfig</field>
-        <field name="repeat_expression">object.perceptor_ids</field>
+        <field name="repeat_expression">object.recipient_ids</field>
     </record>
 </odoo>

@@ -18,13 +18,13 @@
                 <header>
 
                 </header>
-                <div
+                <!-- <div
                     class="alert alert-danger"
                     role="alert"
                     attrs="{'invisible': ['|', ('id', '=', False), ('check_ok', '=', True)]}"
                 >
                     <b>Errors</b>: <em><field name="error_text" readonly="1" /></em>
-                </div>
+                </div> -->
                 <sheet>
                     <widget
                         name="web_ribbon"
