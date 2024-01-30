@@ -23,7 +23,11 @@
         <field name="inherit_id" ref="l10n_es_aeat.view_l10n_es_aeat_report_form" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="after">
-                <div class="alert alert-danger" role="alert">
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    attrs="{'invisible': [('error_nif_recipient', '!=', True)]}"
+                >
                     <span>Some recipients haven't NIF. Check the recipients tab</span>
                 </div>
             </xpath>
@@ -93,6 +97,7 @@
             <group name="group_declaration" position="after">
                 <notebook>
                     <page name="recipients" string="Recipients">
+                        <field name="error_nif_recipient" invisible="1" />
                         <field name="recipient_ids">
                             <tree decoration-danger="error_nif">
                                 <field name="move_line_id" />

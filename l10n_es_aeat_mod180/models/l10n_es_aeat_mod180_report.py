@@ -88,7 +88,7 @@ class L10nEsAeatMod180Report(models.Model):
     )
     error_nif_recipient = fields.Boolean(
         string="Errors",
-        compute="_compute_error_nif_recipient_text",
+        compute="_compute_error_nif_recipient",
         store=True,
     )
     # move_line_ids = fields.Many2many(
@@ -176,9 +176,11 @@ class L10nEsAeatMod180Report(models.Model):
             report.casilla_05 = report.casilla_03 - report.casilla_04
 
     @api.depends("recipient_ids")
-    def _compute_error_nif_recipient_text(self):
+    def _compute_error_nif_recipient(self):
         for report in self:
-            report.error_nif_recipient = any(report.recipient_ids.mapped("error_nif"))
+            report.error_nif_recipient = report.recipient_ids and any(
+                report.recipient_ids.mapped("error_nif")
+            )
 
     # @api.depends("tax_line_ids", "tax_line_ids.move_line_ids")
     # def _compute_move_line_ids(self):
@@ -210,7 +212,6 @@ class L10nEsAeatMod180Report(models.Model):
 
     def calculate(self):
         res = super().calculate()
-        # self._crear_registros_percetores()
         for rec in self:
             if rec.casilla_05 <= 0.0:
                 rec.tipo_declaracion = "N"
@@ -245,28 +246,32 @@ class L10nEsAeatMod180ReportRecipient(models.Model):
     )
     modalidad = fields.Selection(
         selection=[
-            ("1", "1"),
-            ("2", "2"),
+            ("1", "Si la renta o rendimiento satisfecho es de tipo dinerario."),
+            ("2", "Si la renta o rendimiento satisfecho es en especie."),
         ],
         default="1",
-        help=(
-            "1 Si la renta o rendimiento satisfecho es de tipo dinerario.\n"
-            "2 Si la renta o rendimiento satisfecho es en especie.",
-        ),
     )
     signo = fields.Selection(
         selection=[(" ", "Positivo"), ("N", "Negativo")],
         string="Signo Base Retenciones",
         compute="_compute_amount",
+        store=True,
+        readonly=True,
     )
     base_retenciones = fields.Float(
         compute="_compute_amount",
+        store=True,
+        readonly=True,
     )
     porcentaje_retencion = fields.Float(
         compute="_compute_amount",
+        store=True,
+        readonly=True,
     )
     cuota_retencion = fields.Float(
         compute="_compute_amount",
+        store=True,
+        readonly=True,
     )
     error_nif = fields.Boolean(
         compute="_compute_error_nif",
@@ -286,7 +291,9 @@ class L10nEsAeatMod180ReportRecipient(models.Model):
                 rec.signo = "N"
             else:
                 rec.signo = " "
-            rec.porcentaje_retencion = abs(rec.move_line_id.tax_ids.real_amount)
+            rec.porcentaje_retencion = sum(
+                rec.move_line_id.tax_ids.mapped("real_amount")
+            )
             rec.cuota_retencion = (
                 rec.move_line_id.price_total - rec.move_line_id.price_subtotal
             )
