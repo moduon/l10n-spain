@@ -11,7 +11,7 @@ class AccountMoveLine(models.Model):
         comodel_name="l10n.es.aeat.real_estate",
         string="Real Estate",
         help="Real Estate related to this move line",
-        domain="[('company_id', '=', company_id)]",
+        domain="[('company_id', '=', company_id), ('partner_id', '=', partner_id)]",
     )
 
     def _process_aeat_tax_base_info(self, res, tax, sign):

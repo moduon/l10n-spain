@@ -40,15 +40,15 @@
                     </div>
                     <group>
                         <group string="Legal Representative">
-                            <field name="company_id" />
+                            <field name="partner_id" />
                             <field name="representative_vat" />
+                            <field
+                                name="company_id"
+                                groups="base.group_multi_company"
+                            />
                         </group>
                         <group string="Catastral Reference">
-                            <field name="situation" />
-                            <field
-                                name="reference"
-                                attrs="{'invisible': [('situation', 'not in', ['1', '2'])], 'required': [('situation', 'in', ['1', '2'])]}"
-                            />
+                            <field name="reference" />
                         </group>
                         <separator />
                         <group string="Address" col="3">
@@ -109,12 +109,13 @@
         <field name="model">l10n.es.aeat.real_estate</field>
         <field name="arch" type="xml">
             <tree decoration-danger="not check_ok">
-                <field name="company_id" />
+                <field name="partner_id" />
                 <field name="name" />
                 <field name="representative_vat" optional="hide" />
                 <field name="reference" />
                 <field name="state_id" optional="hide" />
                 <field name="check_ok" invisible="1" />
+                <field name="company_id" groups="base.group_multi_company" />
             </tree>
         </field>
     </record>

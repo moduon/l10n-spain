@@ -18,32 +18,20 @@ class L10nEsAeatRealEstate(models.Model):
         string="Company",
         required=True,
         default=lambda s: s.env.company,
-        help="Company that owns this real estate",
+    )
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        required=True,
+        help="Partner that owns this real estate",
     )
     representative_vat = fields.Char(
         string="L.R. VAT number",
         size=32,
-        default=lambda s: s.env.company.partner_id.vat,
+        compute="_compute_representative_vat",
+        store=True,
+        readonly=False,
         help="Legal Representative VAT number of the real estate",
-    )
-    situation = fields.Selection(
-        selection=[
-            ("1", "1 - Spain but not Basque Country and Navarra"),
-            ("2", "2 - Basque Country and Navarra"),
-            ("3", "3 - Navarra"),
-            ("4", "4 - Foreign"),
-        ],
-        string="Real estate Situation",
-        required=True,
-        default="1",
-        help="1.Property with a cadastral reference located anywhere in Spain,"
-        " except for the Basque Country and Navarre. of the Spanish territory, "
-        "except for the Basque Country and Navarre.\n"
-        "2. Property with cadastral reference located in the Autonomous Community"
-        " of the Basque Country.\n"
-        "3. Property with cadastral reference located in the Community of Navarre.\n"
-        "4. Inmueble en cualquiera de las situaciones anteriores, pero sin "
-        "referencia catastral.\n",
     )
     reference = fields.Char(
         string="Catastral Reference",
@@ -132,6 +120,11 @@ class L10nEsAeatRealEstate(models.Model):
     #     compute="_compute_check_ok",
     #     store=True,
     # )
+
+    @api.depends("partner_id.vat")
+    def _compute_representative_vat(self):
+        for record in self:
+            record.representative_vat = record.partner_id.vat
 
     @api.depends("state_id")
     def _compute_state_related_fields(self):
