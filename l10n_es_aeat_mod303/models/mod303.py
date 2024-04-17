@@ -48,6 +48,11 @@ class L10nEsAeatMod303Report(models.Model):
         states=NON_EDITABLE_ON_DONE,
         help="Registered in the Register of Monthly Return",
     )
+    return_last_period = fields.Boolean(
+        string="Last Period Return",
+        states=NON_EDITABLE_ON_DONE,
+        help="Check if you are submitting the last period return",
+    )
     total_devengado = fields.Float(
         string="[27] VAT payable",
         readonly=True,
@@ -357,6 +362,7 @@ class L10nEsAeatMod303Report(models.Model):
         for record in self:
             if record.period_type not in ("4T", "12"):
                 record.exonerated_390 = "2"
+                record.return_last_period = False
 
     @api.depends("tax_line_ids", "tax_line_ids.amount")
     def _compute_total_devengado(self):
@@ -470,7 +476,7 @@ class L10nEsAeatMod303Report(models.Model):
                 if report.devolucion_mensual or report.period_type in ("4T", "12"):
                     if report.use_aeat_account:
                         report.result_type = "V"
-                    else:
+                    elif report.return_last_period:
                         report.result_type = "D" if report.marca_sepa == "1" else "X"
                 else:
                     report.result_type = "C"
@@ -507,7 +513,9 @@ class L10nEsAeatMod303Report(models.Model):
                             ),
                         }
                     )
-            if (
+            if mod303.return_last_period:
+                cuota_compensar = mod303.potential_cuota_compensar
+            elif (
                 float_compare(
                     mod303.resultado_liquidacion,
                     0,
