@@ -24,8 +24,13 @@ def migrate(env, version):
     openupgrade.logged_query(
         env.cr, "DELETE FROM queue_job WHERE channel = 'root.invoice_validate_sii'"
     )
+    invoice_validate_sii_channel_id = 0
+    try:
+        invoice_validate_sii_channel_id = env.ref("l10n_es_aeat_sii_oca.invoice_validate_sii").id
+    except:
+        pass
     openupgrade.logged_query(
         env.cr,
         "DELETE FROM queue_job_function WHERE channel_id = %s",
-        (env.ref("l10n_es_aeat_sii_oca.invoice_validate_sii").id,),
+        (invoice_validate_sii_channel_id,),
     )
